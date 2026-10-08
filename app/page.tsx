@@ -1,69 +1,45 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="page">
+      <header className="header">
+        <h1>Smart Wallet Demo</h1>
+        <p>
+          Sign in with email. Get a smart wallet. Send a transaction without
+          paying for gas.
+        </p>
+      </header>
+
+      <div className="grid">
+        <section className="card">
+          <h2>Your wallet</h2>
+          <p className="muted">Sign in to see your wallet.</p>
+          <button className="button" disabled>
+            Sign in with email
+          </button>
+          <p className="muted" style={{ fontSize: 14, marginTop: 12 }}>
+            Login is coming in the next step.
           </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        </section>
+
+        <aside className="card">
+          <h2>How it works</h2>
+          <ol className="steps">
+            <li>You sign in with your email. No seed phrase.</li>
+            <li>Privy creates a normal wallet for you in the browser.</li>
+            <li>
+              On your first transaction, EIP-7702 turns this wallet into a smart
+              wallet. The address stays the same.
+            </li>
+            <li>Alchemy pays the gas, based on a sponsorship policy.</li>
+            <li>The Alchemy bundler sends your transaction to the network.</li>
+          </ol>
+        </aside>
+      </div>
+
+      <footer className="footer">
+        Network: Arbitrum Sepolia (test network, no real money). Built with
+        Alchemy Wallet APIs and Privy.
+      </footer>
+    </main>
   );
 }
