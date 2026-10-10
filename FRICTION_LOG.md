@@ -2,7 +2,7 @@
 
 This log records every place where I got stuck or confused while building this demo with Alchemy Wallet APIs. I wrote each entry at the moment it happened. Times are real.
 
-Setup: Next.js 16, React 19, `@alchemy/wallet-apis` 5.3.0, `@privy-io/react-auth` 3.48.0, `viem` 2.56.5. Network: Arbitrum Sepolia. Date: October 2026.
+Setup: Next.js 16, React 19, `@alchemy/wallet-apis` 5.3.0, `@privy-io/react-auth` 3.48.1, `viem` 2.56.5. Network: Arbitrum Sepolia. Date: October 2026.
 
 Severity:
 - **High**: blocks the developer or can cause a security problem.
@@ -70,6 +70,18 @@ Severity:
 | **Time lost** | 5 min to trace where the warnings come from. |
 | **Fix** | None. These are not Alchemy packages. |
 | **Suggestion** | Add one line to the Privy guide: "Privy's React package brings wallet connectors and may show npm warnings. They do not come from `@alchemy/wallet-apis`." This saves a support ticket. |
+
+## 6. Install works on my machine, then fails on Vercel
+
+| | |
+|---|---|
+| **Step** | First deploy to Vercel |
+| **Severity** | High |
+| **Expected** | The three packages from the Privy guide install the same way everywhere. |
+| **What happened** | The first `npm install` on my machine finished with no error. But the first Vercel build failed in 5 seconds with `npm error code ERESOLVE`. I could repeat it locally: a second clean install (`npm ci` or `npm install` with the lock file) fails the same way. The reason: `@alchemy/wallet-apis@5.3.0` has an optional peer `@solana/kit >=6.0.0`. `@privy-io/react-auth@3.48` brings `@solana/kit@5.5.1`, and its Solana helper packages (`@solana-program/system`, `@solana-program/token` and others) need `@solana/kit ^5.0`. So the two packages that the Alchemy docs tell you to use together cannot agree on one version. npm lets the first install pass with an "invalid" tree, and only a clean install shows the error. The error text talks about Solana and Coinbase packages, so an EVM developer has no idea why. |
+| **Time lost** | 40 min (one failed deploy, finding the cause, testing two fixes). |
+| **Fix** | Added `.npmrc` with `legacy-peer-deps=true`. Privy keeps the versions it expects. Alchemy's Solana part gets 5.5.1, which is fine because this demo uses EVM only. I also tested the other fix: install `@solana/kit@^6` at the top level. It also builds, but it forces Privy's Solana helpers onto a version they don't support and adds about 150 extra packages. |
+| **Suggestion** | 1) Test the Privy guide install in CI with a clean `npm ci`, not only with a first install. 2) Until the versions match, add a note to the Privy guide: "If you see ERESOLVE about `@solana/kit`, add `legacy-peer-deps=true` to `.npmrc` (EVM only) or ..." 3) Long term: move Solana support into a separate entry point or package, so EVM-only users don't get Solana peer conflicts at all. |
 
 ---
 
