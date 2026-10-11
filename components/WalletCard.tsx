@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useSmartWallet } from "@/lib/useSmartWallet";
+import { explorerUrl, type WalletStatus } from "@/lib/chain";
 
 export function WalletCard() {
   const { ready, authenticated, user, login, logout } = usePrivy();
@@ -10,6 +12,7 @@ export function WalletCard() {
 
   // Only the Privy embedded wallet. Not an external wallet like MetaMask.
   const wallet = wallets.find((w) => w.walletClientType === "privy");
+  const { client, signerError, read, refresh } = useSmartWallet(wallet);
 
   if (!ready) {
     return (
@@ -76,11 +79,82 @@ export function WalletCard() {
 
         <dt>Network</dt>
         <dd>Arbitrum Sepolia (test network)</dd>
+
+        <dt>Balance</dt>
+        <dd>
+          {read.state === "ready" ? (
+            <>
+              {formatBalance(read.balanceEth)} ETH{" "}
+              <button className="link-button" onClick={() => void refresh()}>
+                Refresh
+              </button>
+            </>
+          ) : read.state === "loading" ? (
+            <span className="muted">Loading…</span>
+          ) : (
+            <span className="error-text">Could not read the balance.</span>
+          )}
+        </dd>
+
+        <dt>Smart wallet</dt>
+        <dd>
+          {read.state === "ready" ? (
+            <StatusText status={read.status} />
+          ) : (
+            <span className="muted">—</span>
+          )}
+        </dd>
+
+        <dt>Alchemy client</dt>
+        <dd>
+          {signerError ? (
+            <span className="error-text">Could not get a signer from Privy.</span>
+          ) : client ? (
+            <span className="ok-text">Ready</span>
+          ) : (
+            <span className="muted">Connecting…</span>
+          )}
+        </dd>
       </dl>
 
+      {wallet && (
+        <p className="small">
+          <a
+            href={`${explorerUrl}/address/${wallet.address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open this wallet in Arbiscan ↗
+          </a>
+        </p>
+      )}
+
       <p className="muted small">
-        Balance, smart wallet status and transactions come in the next step.
+        Transactions come in the next step.
       </p>
     </section>
   );
+}
+
+function formatBalance(eth: string) {
+  if (eth === "0") return "0";
+  const n = Number(eth);
+  return n < 0.000001 ? "< 0.000001" : n.toFixed(6).replace(/\.?0+$/, "");
+}
+
+function StatusText({ status }: { status: WalletStatus }) {
+  switch (status.kind) {
+    case "not-activated":
+      return <span>Not activated yet. It turns on with your first transaction.</span>;
+    case "active":
+      return <span className="ok-text">Active (EIP-7702)</span>;
+    case "other-delegate":
+      return (
+        <span className="warn-text">
+          Linked to a different smart account contract ({status.delegate.slice(0, 10)}…)
+        </span>
+      );
+    case "contract":
+      return <span className="warn-text">This address is a contract, not a wallet.</span>;
+  }
 }
