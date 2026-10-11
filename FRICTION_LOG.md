@@ -1,6 +1,6 @@
 # Friction Log
 
-This log records every place where I got stuck or confused while building this demo with Alchemy Wallet APIs. I wrote each entry at the moment it happened. Times are real.
+This log records every place where I got stuck or confused while building this demo with Alchemy Wallet APIs. I wrote each entry at the moment it happened. Times are approximate. Entries marked "done by Leonid" happened when Leonid, a non-developer, did the dashboard setup by hand.
 
 Setup: Next.js 16, React 19, `@alchemy/wallet-apis` 5.3.0, `@privy-io/react-auth` 3.48.1, `viem` 2.56.5 (pinned, see entry 7). Network: Arbitrum Sepolia. Date: October 2026.
 
@@ -8,6 +8,29 @@ Severity:
 - **High**: blocks the developer or can cause a security problem.
 - **Medium**: costs time or causes doubt.
 - **Low**: small, but adds up.
+
+## Summary
+
+14 entries: 4 high, 6 medium, 4 low. Each one has a matching section in [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
+
+| # | Problem | Severity | Area |
+|---|---|---|---|
+| 1 | Privy page gives two different setup rules | Medium | Docs |
+| 2 | Examples put the API key in browser code without a warning | High | Docs, security |
+| 3 | The full dashboard setup order is not on one page | Medium | Docs |
+| 4 | The SDK installs an alpha package and two copies of one package | Low | SDK |
+| 5 | The recommended signer adds 650 packages and warnings | Low | Install |
+| 6 | Install works on my machine, then fails on Vercel | High | Install |
+| 7 | The workaround for #6 hides three other problems | High | Install |
+| 8 | Privy dashboard labels don't match the Privy docs | Low | Partner docs |
+| 9 | The Privy example takes the first wallet, which may be the wrong one | High | Docs, code sample |
+| 10 | "Create app" has no "Wallet APIs" service to pick | Medium | Dashboard |
+| 11 | Policy limits: does "0" mean "no limit" or "nothing allowed"? | Medium | Dashboard |
+| 12 | In the explorer, a sponsored transaction looks unsponsored | Low | Docs |
+| 13 | Error docs: two pages, two formats, other names than the dashboard | Medium | Docs, API |
+| 14 | An inactive policy passes "prepare" and fails only after signing | Medium | API |
+
+What went well: once the packages installed, the core flow worked on the first try. One `createSmartWalletClient` call with the Privy signer and a policy ID gave a working EIP-7702 smart wallet. The first transaction did the delegation and the call together. Gas sponsorship on testnet worked with a $0 balance. Batching two calls needed no extra code.
 
 ---
 
@@ -19,8 +42,8 @@ Severity:
 | **Severity** | Medium |
 | **Expected** | One clear list of what must be linked to my Alchemy app. |
 | **What happened** | The Privy page has two tabs. The React tab says only the gas sponsorship policy must be linked to the app. The JavaScript (server) tab says both the "Wallet APIs configuration" and the policy must be linked. I don't know if the React path also needs the "Wallet APIs configuration", or what that is. No other page explains it. |
-| **Time lost** | 5 min so far. Still open. |
-| **Fix** | Open. I will check the dashboard during setup and update this entry. |
+| **Time lost** | 5 min of doubt, then open until the first transaction. |
+| **Fix** | For the React path nothing else was needed. The policy is created inside the app (policies are app-scoped), and the first sponsored transaction worked. I never found anything called "Wallet APIs configuration" in the dashboard (see also entry 10). |
 | **Suggestion** | Use the same warning on both tabs. Add one sentence that explains what "Wallet APIs configuration" is and where to find it in the dashboard. |
 
 ## 2. Examples put the API key in browser code without a warning
@@ -32,7 +55,7 @@ Severity:
 | **Expected** | A note on how to protect the API key in a public web app. |
 | **What happened** | The React example on the Privy page puts the Alchemy API key directly in browser code. Anyone who opens the site can copy it. The page does not say what the risk is, or how to limit it (domain allowlist, spend limits on the policy, or a server proxy). A new developer will copy the example as it is. |
 | **Time lost** | 10 min to read around and decide what to do. |
-| **Fix** | For this demo: low limits on the gas policy, and a domain allowlist on the key if the dashboard supports it. Details will be added after dashboard setup. |
+| **Fix** | Low limits on the gas policy ($5 total, $1 and 10 transactions per wallet), and a domain allowlist on the key: Alchemy Dashboard → app → Security → Allowlist → Domain (`alchemy-smart-wallet-demo.vercel.app`, `localhost`). Confirmed working: the site reads balances through the key from its own domain. |
 | **Suggestion** | Add a short "Before you go live" box to the React examples: "This key is visible in the browser. Restrict it to your domain and set spend limits on your policy." Link to the page that shows how. |
 
 ## 3. The full dashboard setup order is not on one page
@@ -56,7 +79,7 @@ Severity:
 | **Expected** | A stable SDK release with stable dependencies. |
 | **What happened** | `@alchemy/wallet-apis@5.3.0` depends on `@alchemy/wallet-api-types@0.2.0-alpha.6`. That package brings `@alchemy/common@5.2.0`, while the SDK itself uses `@alchemy/common@5.3.0`. So the project has two versions of the same Alchemy package. It works so far, but two copies can cause type errors that are hard to understand. And an alpha package inside a stable release makes a careful team ask questions. |
 | **Time lost** | 5 min to find out why `npm ls` showed two versions. |
-| **Fix** | None needed yet. Watching for type errors. |
+| **Fix** | None needed. No type errors happened up to the end of the project. |
 | **Suggestion** | Release the types package as stable, and keep all `@alchemy/*` dependencies on the same version in each release. |
 
 ## 5. The recommended signer adds 650 packages and deprecation warnings
@@ -103,7 +126,7 @@ Severity:
 | **Severity** | Low |
 | **Expected** | Find the App ID and the domain list by the names in the docs. |
 | **What happened** | Privy docs say: App ID is in Configuration → App settings → **Basics** tab; domains are in the **Domains** tab, field **Allowed Origins**. In the real dashboard: the menu is **App settings → Basics**, and Basics is a page with its own tabs: **API keys**, **Domains and clients**, **Privy Home**, **Advanced**. The field is **Allowed origins**, with an **Add** button for each domain. Also, the Alchemy Privy guide does not mention allowed origins at all, so a developer who deploys the example may not know this step exists. |
-| **Time lost** | Not measured. |
+| **Time lost** | Not measured. But the first instructions I gave Leonid used the names from the docs, and he could not follow them. He needed a second, click-by-click version. |
 | **Fix** | Found by clicking around. Added `http://localhost:3000` and the Vercel domain. |
 | **Suggestion** | For Alchemy: add one line to the Privy guide: "Before you deploy, add your domain in Privy Dashboard → App settings → Basics → Domains and clients → Allowed origins." This is not Alchemy's UI, but it is part of Alchemy's recommended path, so the user will blame the path. |
 
@@ -112,7 +135,7 @@ Severity:
 | | |
 |---|---|
 | **Step** | Adding Privy login (stage 2) |
-| **Severity** | Low |
+| **Severity** | High (raised from Low after I saw the error in Privy's code) |
 | **Expected** | The example gets the Privy embedded wallet. |
 | **What happened** | The Alchemy Privy guide uses `const { wallets: [wallet] } = useWallets()`. `useWallets()` returns all connected wallets, including external ones like MetaMask. If an app also allows wallet login, the first wallet can be MetaMask. Then the 7702 flow breaks, because MetaMask does not sign EIP-7702 authorizations for other contracts (the Alchemy EIP-7702 page says this itself). |
 | **Time lost** | 5 min (found while reading Privy types). |
@@ -127,7 +150,7 @@ Severity:
 | **Severity** | Medium |
 | **Expected** | A "Wallet APIs" or "Smart Wallets" option, since the docs call the product "Wallet APIs". |
 | **What happened** | The service picker shows 15 cards: Webhooks, Transfers API, Node API, NFT API, Token API, Prices API, Bundler API, Debug API, Block Timestamp API, Gas Manager, Trace API, Transaction Receipts API, userOp Simulation API, Websockets. None of them is called "Wallet APIs". A new user has to guess that Wallet APIs need Gas Manager + Bundler API (+ Node API). The Privy guide also talks about a "Wallet APIs configuration" that must be linked to the app (see entry 1), and this screen does not show it either. Leonid stopped here and had to ask what to choose. |
-| **Time lost** | Not measured yet. |
+| **Time lost** | About 2 minutes for Leonid, but only because he could ask me. He stopped on this screen and asked what to choose. |
 | **Fix** | Picked Node API, Bundler API and Gas Manager. |
 | **Suggestion** | Add a "Wallet APIs (smart wallets, gas sponsorship)" card that turns on all services it needs in one click. Or add one line in the Quickstart: "When you create the app, select Node API, Bundler API and Gas Manager." |
 
@@ -183,4 +206,26 @@ Severity:
 
 ## Top 3 improvements I would ship first
 
-To be written at the end, after all steps are done.
+### 1. One tested starter for "Wallet APIs + Privy"
+
+**Fixes:** #2, #4, #5, #6, #7, #9.
+
+Most of my lost time was not in Alchemy's API. It was in getting the two recommended packages to install and build together. A small official starter repo (or a "copy this `package.json`" block) with exact, tested versions would remove all of it. Run it in CI with a clean `npm ci` on every SDK release, so a peer conflict like #6 is caught before users see it. In the same starter: pick the Privy embedded wallet on purpose (#9), and add a "Before you go live" note about the visible API key, with links to the domain allowlist and policy limits (#2).
+
+**Why first:** #6 and #7 block the first deploy. A developer who cannot deploy the hello-world will not reach the parts of the product that work well.
+
+### 2. One setup path from "new account" to "first sponsored transaction"
+
+**Fixes:** #1, #3, #8, #10, #11.
+
+Today the steps are on four doc pages and the dashboard uses other words than the docs. Three changes: (a) a "Wallet APIs" card on the Create app screen that turns on Node API, Bundler API and Gas Manager; (b) a 5-step checklist at the top of the Quickstart, in the right order ("enable the network before you create the policy"); (c) clear policy fields: "No limit" instead of "0", and a note that testnet sponsorship works with a $0 balance.
+
+**Why second:** this is where a non-developer, and many developers, stop and ask support. Each of these questions is a ticket that a better screen would prevent.
+
+### 3. One error reference, and fail before the user signs
+
+**Fixes:** #12, #13, #14.
+
+Merge "Wallet APIs Errors" and "Gas Manager Errors" into one page for Wallet APIs apps. Give each error a stable code that matches what the live API returns (today the policy error is documented as -32600 but returns -32602). Use the dashboard words in error texts ("Per-wallet limit", not "max count per spender"). Where possible, check that the policy exists and is active in `prepareCalls`, so the user is not asked to sign a transaction that will be rejected. Add a short "How to verify sponsorship" box for BSO, because the explorer shows `paymaster = 0x0`.
+
+**Why third:** these problems don't block the first transaction, but they decide how fast a team can debug production issues. Good error texts are also what Customer Engineers send to customers, so they save support time twice.

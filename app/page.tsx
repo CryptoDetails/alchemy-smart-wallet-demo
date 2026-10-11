@@ -1,5 +1,7 @@
 import { WalletCard } from "@/components/WalletCard";
 
+const REPO = "https://github.com/CryptoDetails/alchemy-smart-wallet-demo";
+
 export default function Home() {
   return (
     <main className="page">
@@ -30,8 +32,24 @@ export default function Home() {
       </div>
 
       <footer className="footer">
-        Network: Arbitrum Sepolia (test network, no real money). Built with
-        Alchemy Wallet APIs and Privy.
+        <p>
+          Network: Arbitrum Sepolia (test network, no real money). Built with
+          Alchemy Wallet APIs and Privy.
+        </p>
+        <p>
+          <a href={`${REPO}/blob/main/FRICTION_LOG.md`} target="_blank" rel="noopener noreferrer">
+            Friction log
+          </a>{" "}
+          ·{" "}
+          <a href={`${REPO}/blob/main/TROUBLESHOOTING.md`} target="_blank" rel="noopener noreferrer">
+            Troubleshooting
+          </a>{" "}
+          ·{" "}
+          <a href={REPO} target="_blank" rel="noopener noreferrer">
+            Source code
+          </a>
+        </p>
+        <p>Built by Leonid Khatskevych with Claude Code as part of my application to Alchemy.</p>
       </footer>
     </main>
   );

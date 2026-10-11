@@ -285,3 +285,7 @@ a {
   cursor: pointer;
   color: var(--muted);
 }
+
+.footer p {
+  margin: 0 0 6px;
+}
