@@ -143,6 +143,18 @@ Severity:
 | **Fix** | Set every field to an explicit non-zero number, so the meaning does not matter. The $0 balance question is answered by stage 4: the first sponsored transaction on Arbitrum Sepolia went through with "Available balance: $0.00" ([tx](https://sepolia.arbiscan.io/tx/0xcaf326a2ddd782695a6b79cc69176fcd4335236237a2a6a6c206798d0bc95092)). So testnet sponsorship does not need a balance, but the dashboard does not say it. |
 | **Suggestion** | Show "No limit" as a placeholder for empty fields instead of "0". Add a line under the balance on testnets: "Testnet sponsorship is free. Balance is used for mainnet only." (if this is true). |
 
+## 12. In the explorer, a sponsored transaction looks like "no paymaster, gas cost 0"
+
+| | |
+|---|---|
+| **Step** | Checking the batch transaction in Arbiscan (stage 5) |
+| **Severity** | Low |
+| **Expected** | Some sign in the explorer that Alchemy sponsored the gas, like a paymaster address. |
+| **What happened** | In the `UserOperationEvent` log of [the batch transaction](https://sepolia.arbiscan.io/tx/0x41a179ec94ee33584a9c83869787a8dbe46c94b4e868d2ab1b610bfaf69e3cf1#eventlog): `paymaster = 0x0000…0000` and `actualGasCost = 0`. The real fee (0.0000023 ETH) is paid in the outer transaction by the bundler (`0x1c5F…7247`). This is how Bundler Sponsored Operations (the recommended "Gas Sponsorship" policy type) work: no onchain paymaster. But a developer who checks "was this sponsored?" in the explorer sees "no paymaster, cost 0" and may think sponsorship did not work, or that the user paid. The BSO page explains that there are no onchain contracts, but does not show what the result looks like in an explorer. |
+| **Time lost** | 10 min to understand the log. |
+| **Fix** | None needed. The user's balance stayed 0 ETH, which is the real proof. |
+| **Suggestion** | Add a short "How to verify sponsorship" box to the BSO page: "In the explorer, `paymaster` is `0x0` and `actualGasCost` is 0. The bundler pays in the outer transaction. Check the Usage tab of your policy to see the cost." |
+
 ---
 
 ## Top 3 improvements I would ship first
