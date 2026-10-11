@@ -156,7 +156,7 @@ export function explainError(err: unknown): FriendlyError {
         explanation: rule.explanation,
         action: rule.action,
         code,
-        details: text,
+        details: shorten(text),
       };
     }
   }
@@ -168,8 +168,12 @@ export function explainError(err: unknown): FriendlyError {
     action:
       "Try again. If it happens again, copy the technical details below and send them to the site owner.",
     code,
-    details: text || String(err),
+    details: shorten(text || String(err)),
   };
+}
+
+function shorten(text: string, max = 600) {
+  return text.length > max ? `${text.slice(0, max)}…` : text;
 }
 
 // Errors from viem and Alchemy wrap each other. Walk the whole chain.
@@ -183,9 +187,11 @@ function collectFacts(err: unknown) {
   while (current && typeof current === "object" && !seen.has(current)) {
     seen.add(current);
     const e = current as Record<string, unknown>;
-    for (const key of ["shortMessage", "details", "message"]) {
+    // viem puts the full request body into "message". "shortMessage" + "details" are enough.
+    const keys = typeof e.shortMessage === "string" ? ["shortMessage", "details"] : ["message"];
+    for (const key of keys) {
       const v = e[key];
-      if (typeof v === "string" && v && !messages.includes(v)) messages.push(v);
+      if (typeof v === "string" && v && !messages.some((m) => m.includes(v))) messages.push(v);
     }
     if (typeof e.name === "string") names.push(e.name);
     if (typeof e.code === "number" || typeof e.code === "string") codes.push(e.code);
