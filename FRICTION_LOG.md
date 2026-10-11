@@ -131,6 +131,18 @@ Severity:
 | **Fix** | Picked Node API, Bundler API and Gas Manager. |
 | **Suggestion** | Add a "Wallet APIs (smart wallets, gas sponsorship)" card that turns on all services it needs in one click. Or add one line in the Quickstart: "When you create the app, select Node API, Bundler API and Gas Manager." |
 
+## 11. Policy limits: does "0" mean "no limit" or "nothing allowed"?
+
+| | |
+|---|---|
+| **Step** | Alchemy dashboard: gas policy limits (done by Leonid) |
+| **Severity** | Medium |
+| **Expected** | Clear meaning of each field. |
+| **What happened** | A new policy shows "Per-wallet limit: $0.00" and "Total transaction limit: 0". The screen does not say if 0 means "unlimited" or "block everything". If it means "block", the first sponsored transaction fails, and the developer looks for the bug in the code. If it means "unlimited", a public demo has no cap. Also the page shows "Available balance: $0.00" next to an Active policy on the Free tier. It is not clear if testnet sponsorship needs a balance. |
+| **Time lost** | 5 min. |
+| **Fix** | Set every field to an explicit non-zero number, so the meaning does not matter. Will confirm the $0 balance question at the first transaction (stage 4). |
+| **Suggestion** | Show "No limit" as a placeholder for empty fields instead of "0". Add a line under the balance on testnets: "Testnet sponsorship is free. Balance is used for mainnet only." (if this is true). |
+
 ---
 
 ## Top 3 improvements I would ship first
