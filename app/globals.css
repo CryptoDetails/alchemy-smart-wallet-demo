@@ -185,3 +185,77 @@ a {
 .error-text {
   color: var(--error);
 }
+
+.send-panel {
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.progress {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.progress li {
+  padding: 4px 0 4px 26px;
+  position: relative;
+}
+
+.progress li::before {
+  position: absolute;
+  left: 0;
+  width: 18px;
+  text-align: center;
+}
+
+.step-todo {
+  color: var(--muted);
+}
+.step-todo::before {
+  content: "○";
+}
+.step-active {
+  font-weight: 600;
+}
+.step-active::before {
+  content: "◐";
+  color: var(--accent);
+}
+.step-done::before {
+  content: "✓";
+  color: var(--ok);
+}
+.step-error {
+  color: var(--error);
+  font-weight: 600;
+}
+.step-error::before {
+  content: "✕";
+}
+
+.result {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+
+.result p {
+  margin: 6px 0 0;
+}
+
+.ok-box {
+  border: 1px solid var(--ok);
+}
+
+.error-box {
+  border: 1px solid var(--error);
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  word-break: break-word;
+}

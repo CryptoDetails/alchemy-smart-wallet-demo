@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useSmartWallet } from "@/lib/useSmartWallet";
 import { explorerUrl, type WalletStatus } from "@/lib/chain";
+import { SendPanel } from "@/components/SendPanel";
 
 export function WalletCard() {
   const { ready, authenticated, user, login, logout } = usePrivy();
@@ -129,9 +130,7 @@ export function WalletCard() {
         </p>
       )}
 
-      <p className="muted small">
-        Transactions come in the next step.
-      </p>
+      <SendPanel client={client} onFinished={() => void refresh()} />
     </section>
   );
 }

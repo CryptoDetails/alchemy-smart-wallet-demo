@@ -116,7 +116,7 @@ Severity:
 | **Expected** | The example gets the Privy embedded wallet. |
 | **What happened** | The Alchemy Privy guide uses `const { wallets: [wallet] } = useWallets()`. `useWallets()` returns all connected wallets, including external ones like MetaMask. If an app also allows wallet login, the first wallet can be MetaMask. Then the 7702 flow breaks, because MetaMask does not sign EIP-7702 authorizations for other contracts (the Alchemy EIP-7702 page says this itself). |
 | **Time lost** | 5 min (found while reading Privy types). |
-| **Fix** | Pick the wallet with `walletClientType === "privy"`. |
+| **Fix** | Pick the wallet with `walletClientType === "privy"`. Confirmed later in Privy's code: its viem account throws "EIP-7702 authorization signing is not supported by external wallets" for any wallet that is not the Privy embedded one. So with the guide's example, the first transaction fails for those users. |
 | **Suggestion** | Change the example to `wallets.find((w) => w.walletClientType === "privy")` and add one comment about why. |
 
 ## 10. "Create app" has no "Wallet APIs" service to pick
