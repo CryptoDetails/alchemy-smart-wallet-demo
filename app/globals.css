@@ -259,3 +259,20 @@ a {
   font-size: 12px;
   word-break: break-word;
 }
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.batch-list ol {
+  margin: 4px 0 0;
+  padding-left: 20px;
+}

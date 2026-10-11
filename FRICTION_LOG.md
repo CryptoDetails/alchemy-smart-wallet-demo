@@ -140,7 +140,7 @@ Severity:
 | **Expected** | Clear meaning of each field. |
 | **What happened** | A new policy shows "Per-wallet limit: $0.00" and "Total transaction limit: 0". The screen does not say if 0 means "unlimited" or "block everything". If it means "block", the first sponsored transaction fails, and the developer looks for the bug in the code. If it means "unlimited", a public demo has no cap. Also the page shows "Available balance: $0.00" next to an Active policy on the Free tier. It is not clear if testnet sponsorship needs a balance. |
 | **Time lost** | 5 min. |
-| **Fix** | Set every field to an explicit non-zero number, so the meaning does not matter. Will confirm the $0 balance question at the first transaction (stage 4). |
+| **Fix** | Set every field to an explicit non-zero number, so the meaning does not matter. The $0 balance question is answered by stage 4: the first sponsored transaction on Arbitrum Sepolia went through with "Available balance: $0.00" ([tx](https://sepolia.arbiscan.io/tx/0xcaf326a2ddd782695a6b79cc69176fcd4335236237a2a6a6c206798d0bc95092)). So testnet sponsorship does not need a balance, but the dashboard does not say it. |
 | **Suggestion** | Show "No limit" as a placeholder for empty fields instead of "0". Add a line under the balance on testnets: "Testnet sponsorship is free. Balance is used for mainnet only." (if this is true). |
 
 ---
