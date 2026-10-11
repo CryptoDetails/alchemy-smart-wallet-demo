@@ -1,3 +1,5 @@
+import { WalletCard } from "@/components/WalletCard";
+
 export default function Home() {
   return (
     <main className="page">
@@ -10,16 +12,7 @@ export default function Home() {
       </header>
 
       <div className="grid">
-        <section className="card">
-          <h2>Your wallet</h2>
-          <p className="muted">Sign in to see your wallet.</p>
-          <button className="button" disabled>
-            Sign in with email
-          </button>
-          <p className="muted" style={{ fontSize: 14, marginTop: 12 }}>
-            Login is coming in the next step.
-          </p>
-        </section>
+        <WalletCard />
 
         <aside className="card">
           <h2>How it works</h2>

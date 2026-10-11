@@ -11,10 +11,12 @@
   "dependencies": {
     "@alchemy/wallet-apis": "^5.3.0",
     "@privy-io/react-auth": "^3.48.0",
+    "@stripe/stripe-js": "^1.54.2",
+    "@tanstack/react-query": "5.104.1",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "viem": "^2.56.5"
+    "viem": "2.56.5"
   },
   "devDependencies": {
     "@types/node": "^20",
