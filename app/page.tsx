@@ -49,7 +49,7 @@ export default function Home() {
             Source code
           </a>
         </p>
-        <p>Built by Leonid Khatskevych with Claude Code as part of my application to Alchemy.</p>
+        <p>Built by Leonid Khatskevych with Claude Code.</p>
       </footer>
     </main>
   );

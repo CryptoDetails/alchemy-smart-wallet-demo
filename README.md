@@ -19,7 +19,7 @@ A new path is where customers get stuck today. So it is where a friction log is 
 
 ## Why this exists
 
-I built this to apply for the **Customer Product Engineer, EMEA** role at Alchemy (Account Abstraction & Wallet Services). I am a product owner, not a developer by background. I wanted to walk the path of an Alchemy customer myself, from an empty folder to a working sponsored transaction, and write down every place where that path is hard.
+I am a product owner, not a developer by background. I wanted to walk the path of a developer who builds on Alchemy Wallet APIs myself, from an empty folder to a working sponsored transaction, and write down every place where that path is hard.
 
 The site is the proof that it works. The two documents are the main result:
 
@@ -106,4 +106,4 @@ Note: the repo has `.npmrc` with `legacy-peer-deps=true` and pins `viem` to `2.5
 
 ---
 
-Built by Leonid Khatskevych with Claude Code as part of my application to Alchemy.
+Built by Leonid Khatskevych with Claude Code.
