@@ -119,6 +119,18 @@ Severity:
 | **Fix** | Pick the wallet with `walletClientType === "privy"`. |
 | **Suggestion** | Change the example to `wallets.find((w) => w.walletClientType === "privy")` and add one comment about why. |
 
+## 10. "Create app" has no "Wallet APIs" service to pick
+
+| | |
+|---|---|
+| **Step** | Alchemy dashboard: Create new app (done by Leonid) |
+| **Severity** | Medium |
+| **Expected** | A "Wallet APIs" or "Smart Wallets" option, since the docs call the product "Wallet APIs". |
+| **What happened** | The service picker shows 15 cards: Webhooks, Transfers API, Node API, NFT API, Token API, Prices API, Bundler API, Debug API, Block Timestamp API, Gas Manager, Trace API, Transaction Receipts API, userOp Simulation API, Websockets. None of them is called "Wallet APIs". A new user has to guess that Wallet APIs need Gas Manager + Bundler API (+ Node API). The Privy guide also talks about a "Wallet APIs configuration" that must be linked to the app (see entry 1), and this screen does not show it either. Leonid stopped here and had to ask what to choose. |
+| **Time lost** | Not measured yet. |
+| **Fix** | Picked Node API, Bundler API and Gas Manager. |
+| **Suggestion** | Add a "Wallet APIs (smart wallets, gas sponsorship)" card that turns on all services it needs in one click. Or add one line in the Quickstart: "When you create the app, select Node API, Bundler API and Gas Manager." |
+
 ---
 
 ## Top 3 improvements I would ship first
