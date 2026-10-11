@@ -74,5 +74,12 @@ export function useSmartWallet(wallet: ConnectedWallet | undefined) {
     void refresh();
   }, [refresh]);
 
+  // When the connection comes back, read again.
+  useEffect(() => {
+    const onOnline = () => void refresh();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [refresh]);
+
   return { client, signerError, read, refresh };
 }

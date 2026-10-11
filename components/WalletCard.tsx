@@ -93,7 +93,12 @@ export function WalletCard() {
           ) : read.state === "loading" ? (
             <span className="muted">Loading…</span>
           ) : (
-            <span className="error-text">Could not read the balance.</span>
+            <>
+              <span className="error-text">Could not read the balance. Check your connection.</span>{" "}
+              <button className="link-button" onClick={() => void refresh()}>
+                Try again
+              </button>
+            </>
           )}
         </dd>
 
