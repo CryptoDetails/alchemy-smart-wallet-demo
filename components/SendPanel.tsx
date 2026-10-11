@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { SmartWalletClient } from "@alchemy/wallet-apis";
 import { explorerUrl } from "@/lib/chain";
+import { explainError, type FriendlyError } from "@/lib/errors";
 import {
   DEMO_TARGETS,
   runSponsoredCalls,
@@ -38,7 +39,7 @@ type State =
   | { phase: "idle" }
   | { phase: "running"; kind: Kind; step: Step; activatedNow: boolean }
   | { phase: "done"; kind: Kind; result: FlowResult }
-  | { phase: "error"; kind: Kind; step: Step; message: string };
+  | { phase: "error"; kind: Kind; step: Step; error: FriendlyError };
 
 export function SendPanel({
   client,
@@ -61,14 +62,8 @@ export function SendPanel({
       });
       setState({ phase: "done", kind, result });
     } catch (e: unknown) {
-      // Stage 6 will turn these into clear messages. For now, show the raw text.
       console.error("[demo] sponsored transaction failed", e);
-      setState({
-        phase: "error",
-        kind,
-        step: current,
-        message: e instanceof Error ? e.message : String(e),
-      });
+      setState({ phase: "error", kind, step: current, error: explainError(e) });
     } finally {
       onFinished();
     }
@@ -149,15 +144,51 @@ export function SendPanel({
         </div>
       )}
 
-      {state.phase === "error" && (
-        <div className="result error-box">
-          <strong>The transaction did not go through.</strong>
-          <p className="small">
-            Failed at step: {STEPS.find((s) => s.id === state.step)?.label}
-          </p>
-          <p className="small mono">{state.message}</p>
-        </div>
-      )}
+      {state.phase === "error" && <ErrorBox error={state.error} step={state.step} />}
+    </div>
+  );
+}
+
+function ErrorBox({ error, step }: { error: FriendlyError; step: Step }) {
+  const [copied, setCopied] = useState(false);
+  const stepLabel = STEPS.find((s) => s.id === step)?.label.split(":")[0];
+  const report = [
+    `Error: ${error.id}`,
+    error.code !== undefined ? `Code: ${error.code}` : "",
+    `Step: ${stepLabel}`,
+    `Details: ${error.details}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(report);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard can be blocked. The details are still on the screen.
+    }
+  }
+
+  return (
+    <div className="result error-box" role="alert">
+      <strong>{error.title}</strong>
+      <p className="small">{error.explanation}</p>
+      <p className="small">
+        <b>What to do:</b> {error.action}
+      </p>
+      <details className="small tech">
+        <summary>Technical details</summary>
+        <p>
+          Failed at step: {stepLabel}
+          {error.code !== undefined && <> · Code: {String(error.code)}</>} · Type: {error.id}
+        </p>
+        <p className="mono">{error.details}</p>
+        <button className="link-button" onClick={() => void copy()}>
+          {copied ? "Copied" : "Copy details"}
+        </button>
+      </details>
     </div>
   );
 }

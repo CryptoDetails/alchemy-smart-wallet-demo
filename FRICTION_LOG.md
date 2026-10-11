@@ -155,6 +155,18 @@ Severity:
 | **Fix** | None needed. The user's balance stayed 0 ETH, which is the real proof. |
 | **Suggestion** | Add a short "How to verify sponsorship" box to the BSO page: "In the explorer, `paymaster` is `0x0` and `actualGasCost` is 0. The bundler pays in the outer transaction. Check the Usage tab of your policy to see the cost." |
 
+## 13. Error docs: two pages, two texts for one problem, and other names than the dashboard
+
+| | |
+|---|---|
+| **Step** | Writing clear error messages (stage 6) |
+| **Severity** | Medium |
+| **Expected** | One list of errors a Wallet APIs app can get, with the exact text to match. |
+| **What happened** | There are two pages. [Wallet APIs Errors](https://www.alchemy.com/docs/wallets/troubleshooting/wallet-apis-errors) says a bad or inactive policy returns `Sponsorship failed: [invalid_argument] Policy ID(s) not found`. [Gas Manager Errors](https://www.alchemy.com/docs/wallets/reference/gas-manager-errors) says the same case returns `Invalid Policy ID. Please ensure you're sending requests with the api key...`. I don't know which one a BSO policy returns today, so my code matches both. The limit errors are only on the Gas Manager page. Their names don't match the dashboard: the error says "max count per spender", the dashboard says "Per-wallet transaction limit"; the error says "max spend global", the dashboard says "Total policy limit". Also, neither page lists the error for a blocked domain (key allowlist), and the Wallet APIs page has no limit errors, while BSO checks limits at send time (per the BSO page). Some Gas Manager errors have no code, so you can only match on text. |
+| **Time lost** | 30 min to collect and compare. |
+| **Fix** | One list in `lib/errors.ts` that matches both texts. Each case has a section in TROUBLESHOOTING.md. Tested with sample errors from both pages. |
+| **Suggestion** | Merge the two pages into one "Errors for Wallet APIs apps" page. Give every error a stable code. Use the same words as the dashboard (Per-wallet limit, Total policy limit). Add the domain allowlist error. |
+
 ---
 
 ## Top 3 improvements I would ship first
