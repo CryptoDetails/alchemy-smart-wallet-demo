@@ -6,6 +6,17 @@ Email login → smart wallet (EIP-7702) → a transaction with gas paid by the a
 
 ![Demo: a new wallet with 0 ETH sends a sponsored transaction, gets activated with EIP-7702, sends a batch, and the transaction is shown on Arbiscan](docs/demo.gif)
 
+## Why this use case
+
+I chose the newest and least tested path in Alchemy's wallet product, on purpose.
+
+- **The SDK is new.** `@alchemy/wallet-apis` v5 became stable in May 2026. I used 5.3.0, released three days before I started. Most examples on the internet are for the old SDK.
+- **The login part changed.** Alchemy's own Account Kit is now deprecated. The docs recommend Privy for login and keys, and Alchemy for transactions and gas. This pairing is new, and new pairings break in new ways. My strongest finding ([entry 6](./FRICTION_LOG.md#6-install-works-on-my-machine-then-fails-on-vercel)) exists only because of it.
+- **EIP-7702 is the default.** Since Ethereum's Pectra upgrade (May 2025), a normal wallet can become a smart wallet on the same address. No second address, no moving funds. This is where wallets are going, and Alchemy made it the default.
+- **Gas sponsorship is the core value.** For the user, it removes the first barrier: a new user has no crypto to pay fees. For Alchemy, it is a paid product, so questions about it reach support first.
+
+A new path is where customers get stuck today. So it is where a friction log is most useful.
+
 ## Why this exists
 
 I built this to apply for the **Customer Product Engineer, EMEA** role at Alchemy (Account Abstraction & Wallet Services). I am a product owner, not a developer by background. I wanted to walk the path of an Alchemy customer myself, from an empty folder to a working sponsored transaction, and write down every place where that path is hard.

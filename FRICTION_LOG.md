@@ -2,6 +2,8 @@
 
 This log records every place where I got stuck or confused while building this demo with Alchemy Wallet APIs. I wrote each entry at the moment it happened. Times are approximate. Entries marked "done by Leonid" happened when Leonid, a non-developer, did the dashboard setup by hand.
 
+I chose this path on purpose: it is the newest one in Alchemy's wallet product (SDK v5, Privy instead of Account Kit, EIP-7702 by default), so it is where customers get stuck today. See [Why this use case](./README.md#why-this-use-case).
+
 Setup: Next.js 16, React 19, `@alchemy/wallet-apis` 5.3.0, `@privy-io/react-auth` 3.48.1, `viem` 2.56.5 (pinned, see entry 7). Network: Arbitrum Sepolia. Date: October 2026.
 
 Severity:
